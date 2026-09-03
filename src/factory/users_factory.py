@@ -1,6 +1,7 @@
 from users.users import Student, Faculty, Guest
 
 class UsersFactory():
+    """Фабрика создания пользователей"""
     @staticmethod
     def user_create(name: str, id: int, email: str, role: str):
         if role == "Student":
