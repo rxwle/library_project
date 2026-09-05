@@ -3,6 +3,7 @@ from users.users import Student, Faculty, Guest
 from users.base_user import User
 from factory.users_factory import UsersFactory
 from borrow_notes.borrow_note import BorrowNote
+from datetime import datetime
 
 class Library():
     """Класс библиотеки"""
@@ -26,6 +27,7 @@ class Library():
             print(f"Не удалось добавить книгу:{e}")
 
     def remove_book(self, isbn:str):
+        """Удалить книгу"""
         if isbn in self.all_books:
             if not (self.all_books[isbn].available_status):
                 print("Нельзя удалить книгу, она у пользователя")
@@ -38,6 +40,7 @@ class Library():
             return False
 
     def find_book(self, isbn: str):
+        """Найти книгу по isbn"""
         if not isbn in self.all_books:
             print("Книга не найдена")
             return None
@@ -45,6 +48,7 @@ class Library():
         return self.all_books[isbn]
     
     def search_books(self, search:str):
+        """Найти книги по названию, автору или isbn"""
         res = []
         for book in self.all_books.values():
             if search in book.title or search in book.author or search in book.isbn:
@@ -66,6 +70,7 @@ class Library():
             print(f"Не удалось добавить пользователя:{e}")
 
     def find_user(self, id: int):
+        """Найти пользователя"""
         if not id in self.users:
             print(f"Пользователь с id: {id} не найден")
             return None
@@ -73,6 +78,7 @@ class Library():
         return self.users[id]
     
     def borrow_book(self, id: int, isbn: str):
+        """Одолжение книги"""
         if not id in self.users or not isbn in self.all_books:
             print("Пользователь или книга не найдены")
             return False
@@ -92,6 +98,7 @@ class Library():
         return True
 
     def return_book(self, id: int, isbn: str):
+        """Возврат книги"""
         if not id in self.users or not isbn in self.all_books:
             print("Пользователь или книга не найдены")
             return False
@@ -100,3 +107,21 @@ class Library():
 
         user.borrowedbooks.remove(book)
         book.available_status = True
+
+        for record in self.borrow_history:
+            if record.user_id == id and record.book_isbn == isbn:
+                if record.is_overstayed():
+                    days_late = (record.returned_day - record.back_day).days
+                    fine = days_late * user.get_fine_per_day()
+                    print(f"Возврат просрочен, штраф: {fine}")
+                print("Книга возвращена")
+                return True
+        return False
+    
+    def get_overdue_books(self):
+        """Список просроченных одолжений книг"""
+        res = []
+        for record in self.borrow_history:
+            if record.is_overstayed:
+                res.append(record)
+        return res

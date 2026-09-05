@@ -5,8 +5,8 @@ from users.base_user import User
 class BorrowNote():
     """Записи одолжения книг"""
     def __init__(self, user: User, book: Book):
-        self.user = user
-        self.book = book
+        self.user_id = user.id
+        self.book_isbn = book.book_isbn
         self.borrow_date = datetime.now()
         self.back_day = self.borrow_date + timedelta(days=user.get_borrow_days())
         self.returned_day = None
