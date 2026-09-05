@@ -79,11 +79,11 @@ class Library():
     
     def borrow_book(self, id: int, isbn: str):
         """Одолжение книги"""
-        if not id in self.users or not isbn in self.all_books:
-            print("Пользователь или книга не найдены")
+        user = self.find_user(id)
+        book = self.find_book(isbn)
+        if user is None or book is None:
+            print("Ошибка поиска пользователя или книги")
             return False
-        user = self.users[id]
-        book = self.all_books[isbn]
         if not(user.can_get_books()):
             print("Пользователь превысил лимит взятых книг")
             return False
@@ -99,11 +99,11 @@ class Library():
 
     def return_book(self, id: int, isbn: str):
         """Возврат книги"""
-        if not id in self.users or not isbn in self.all_books:
-            print("Пользователь или книга не найдены")
+        user = self.find_user(id)
+        book = self.find_book(isbn)
+        if user is None or book is None:
+            print("Ошибка поиска пользователя или книги")
             return False
-        user = self.users[id]
-        book = self.all_books[isbn]
 
         user.borrowedbooks.remove(book)
         book.available_status = True
