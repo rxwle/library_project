@@ -1,12 +1,14 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+from book.book import Book
+from users.base_user import User
 
 class BorrowNote():
     """Записи одолжения книг"""
-    def __init__(self, back_day: int, user_id, book_isbn: str, borrow_date: datetime):
-        self.back_day = back_day
-        self.user_id = user_id
-        self.book_isbn = book_isbn
-        self.borrow_date = borrow_date
+    def __init__(self, user: User, book: Book):
+        self.user = user
+        self.book = book
+        self.borrow_date = datetime.now()
+        self.back_day = self.borrow_date + timedelta(days=user.get_borrow_days())
         self.returned_day = None
 
     def is_overstayed(self):

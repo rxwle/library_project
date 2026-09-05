@@ -1,12 +1,10 @@
 class User():
-    def __init__(self, name: str, id: int, email: str, max_borrowed_books: int, borrow_days: int, max_borrow_days: int, borrowed_books: list):
+    def __init__(self, name: str, id: int, email: str):
         
         errors = []
         if not(isinstance(name, str)):
             errors.append("Неверный тип name")
         if not(isinstance(email, str)):
-            errors.append("Неверный тип name")
-        if not(isinstance(borrow_days, int)):
             errors.append("Неверный тип name")
             
         if errors:
@@ -17,11 +15,20 @@ class User():
         self.id = id
         self.email = email
         self.borrowedbooks = []
-        self.max_borrowed_books = max_borrowed_books
-        self.max_borrow_days = max_borrow_days
-        self.borrow_days = borrow_days
 
-    def _can_take_books(self):
-        return len(self.borrowedbooks) < self.max_borrowed_books and self.borrow_days <= self.max_borrow_days
+    def get_max_books(self):
+        raise NotImplementedError
+    
+    def get_borrow_days(self):
+        raise NotImplementedError
+    
+    def get_fine_per_day(self):
+        raise NotImplementedError
+
+    def can_take_books(self):
+        return len(self.borrowedbooks) < self.get_max_books()
+    
+    def __str__(self):
+        return f"{self.__class__.__name__}: {self.name}({self.id})\nEmail:{self.email}"
 
     
